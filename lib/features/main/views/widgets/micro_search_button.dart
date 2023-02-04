@@ -11,10 +11,10 @@ class MicroSearchButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MicroRoundedButton(
-      icon: const Icon(
+      icon: Icon(
         Icons.search_rounded,
         color: AppColors.colorGrey,
-        size: 20.0,
+        size: 20.0.h,
       ),
       onPressed: () {
         showCupertinoModalPopup(

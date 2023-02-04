@@ -48,4 +48,9 @@ extension WidgetExt on Widget {
         padding: EdgeInsets.only(bottom: val.h),
         child: this,
       );
+
+  Widget pad(double val) => Padding(
+        padding: EdgeInsets.all(val.w),
+        child: this,
+      );
 }

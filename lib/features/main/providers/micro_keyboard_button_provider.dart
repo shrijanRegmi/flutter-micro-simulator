@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:micro_simulator/features/main/enums/micro_active_input_type.dart';
 import 'package:micro_simulator/features/main/enums/micro_key_action_type.dart';
 import 'package:micro_simulator/features/main/helpers/common_helper.dart';
 import 'package:micro_simulator/features/main/providers/micro_input_field_provider.dart';
@@ -42,6 +43,8 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         return onNextBtnPressed(keyAction);
       case MicroKeyAction.prev:
         return onPrevBtnPressed(keyAction);
+      case MicroKeyAction.examMem:
+        return onExamMemPressed(keyAction);
       default:
         return onInputKeysPressed(keyAction);
     }
@@ -59,35 +62,90 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
   }
 
   void onInputKeysPressed(final MicroKeyAction keyAction) {
+    final currentAddress = _microInputFieldProviderState.address;
+    final currentValue = _microInputFieldProviderState.value;
+    final currentActiveInput = _microInputFieldProviderState.activeInput;
+
     if (ksMicroKeyAction.containsKey(keyAction)) {
       if (keyAction == MicroKeyAction.reset) {
         _microInputFieldProvider.reset();
       } else {
-        if (_microInputFieldProviderState.address.length >= 4) return;
-        _microInputFieldProvider.setAddress(ksMicroKeyAction[keyAction]!);
+        if (currentActiveInput == MicroActiveInput.address) {
+          if (currentAddress.contains('....')) {
+            _microInputFieldProvider
+              ..resetAddress()
+              ..setAddress(ksMicroKeyAction[keyAction]!);
+          } else if (currentAddress.length < 4) {
+            _microInputFieldProvider.setAddress(ksMicroKeyAction[keyAction]!);
+          } else {
+            _microInputFieldProvider
+              ..resetAddress()
+              ..setAddress(ksMicroKeyAction[keyAction]!);
+          }
+        } else if (currentActiveInput == MicroActiveInput.value) {
+          if (currentValue.contains('..')) {
+            _microInputFieldProvider
+              ..resetValue()
+              ..setValue(ksMicroKeyAction[keyAction]!);
+          } else if (currentValue.length < 2) {
+            _microInputFieldProvider.setValue(ksMicroKeyAction[keyAction]!);
+          } else {
+            _microInputFieldProvider
+              ..resetValue()
+              ..setValue(ksMicroKeyAction[keyAction]!);
+          }
+        }
       }
     }
   }
 
   void onNextBtnPressed(final MicroKeyAction keyAction) {
     final currentAddress = _microInputFieldProviderState.address;
-    final nextAddress = CommonHelper.convertToHex(
-      currentAddress,
-      withIncrement: 1,
-    );
-    _microInputFieldProvider
-      ..resetAddress()
-      ..setAddress(nextAddress);
+    final currentActiveInput = _microInputFieldProviderState.activeInput;
+    final currentAddressValuePair =
+        _microInputFieldProviderState.addressValuePair;
+
+    if (currentActiveInput != MicroActiveInput.value) {
+      _microInputFieldProvider.makeValueActive();
+    } else {
+      final nextAddress = CommonHelper.convertToHex(
+        currentAddress,
+        withIncrement: 1,
+      );
+      final addressContainsValue = currentAddressValuePair[nextAddress] != null;
+
+      _microInputFieldProvider
+        ..saveAddressValue()
+        ..resetAddress()
+        ..setAddress(nextAddress);
+      if (addressContainsValue) {
+        _microInputFieldProvider
+          ..resetValue()
+          ..setValue(currentAddressValuePair[nextAddress]!);
+      } else {
+        _microInputFieldProvider.makeValueActive();
+      }
+    }
   }
 
   void onPrevBtnPressed(final MicroKeyAction keyAction) {
     final currentAddress = _microInputFieldProviderState.address;
+    final currentAddressValuePair =
+        _microInputFieldProviderState.addressValuePair;
     final prevAddress = CommonHelper.convertToHex(
       currentAddress,
       withIncrement: -1,
     );
     _microInputFieldProvider
       ..resetAddress()
-      ..setAddress(prevAddress);
+      ..setAddress(prevAddress)
+      ..resetValue()
+      ..setValue(currentAddressValuePair[prevAddress] ?? '..');
+  }
+
+  void onExamMemPressed(final MicroKeyAction keyAction) {
+    _microInputFieldProvider
+      ..resetValue()
+      ..makeAddressActive();
   }
 }

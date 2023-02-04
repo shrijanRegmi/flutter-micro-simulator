@@ -58,21 +58,36 @@ class HomeScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: SizedBox(
+            height: ScreenUtil().screenHeight - kToolbarHeight,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const MicroVolumeButton(),
-                _addressAndOpcodeBuilder(),
-                const MicroSearchButton(),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const MicroVolumeButton(),
+                          _addressAndOpcodeBuilder(),
+                          const MicroSearchButton(),
+                        ],
+                      ).pY(11),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: _keyboardLayoutBuilder(),
+                ),
               ],
-            ).pT(8).pB(25),
-            Expanded(
-              child: _keyboardLayoutBuilder(),
-            ),
-          ],
-        ).pX(5),
+            ).pX(5),
+          ),
+        ),
       ),
     );
   }
@@ -98,40 +113,42 @@ class HomeScreen extends HookConsumerWidget {
   }
 
   Widget _keyboardLayoutBuilder() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          constraints: BoxConstraints(
-            maxWidth: 77.0.w,
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: 80.0.w,
+            ),
+            child: const MicroKeyboard(
+              keyActions: keyActionsCol1,
+              crossAxisCount: 2,
+              itemCount: 8,
+              fontSize: 12.0,
+            ),
           ),
-          child: const MicroKeyboard(
-            keyActions: keyActionsCol1,
-            crossAxisCount: 2,
-            itemCount: 8,
-            fontSize: 12.0,
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: 160.0.w,
+            ),
+            child: const MicroKeyboard(
+              keyActions: keyActionsCol2,
+            ),
           ),
-        ),
-        Container(
-          constraints: BoxConstraints(
-            maxWidth: 160.0.w,
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: 80.0.w,
+            ),
+            child: const MicroKeyboard(
+              keyActions: keyActionsCol3,
+              crossAxisCount: 2,
+              itemCount: 8,
+              fontSize: 12.0,
+            ),
           ),
-          child: const MicroKeyboard(
-            keyActions: keyActionsCol2,
-          ),
-        ),
-        Container(
-          constraints: BoxConstraints(
-            maxWidth: 77.0.w,
-          ),
-          child: MicroKeyboard(
-            keyActions: keyActionsCol3,
-            crossAxisCount: 2,
-            itemCount: 8,
-            fontSize: 12.0.sp,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -21,11 +21,12 @@ class MicroKeyboard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        mainAxisSpacing: 1.w,
+        crossAxisSpacing: 1.w,
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 5.w,
-        mainAxisSpacing: 5.w,
-        childAspectRatio: 4 / 2.6,
+        childAspectRatio: 4 / 2.7,
       ),
+      shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
       itemBuilder: (context, index) {

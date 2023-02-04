@@ -31,7 +31,7 @@ class MicroKeyboardButton extends HookConsumerWidget {
       duration: const Duration(milliseconds: 10),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(18.0.r),
+        borderRadius: BorderRadius.circular(15.0.r),
         boxShadow: [
           BoxShadow(
             blurRadius: blur,
@@ -71,6 +71,6 @@ class MicroKeyboardButton extends HookConsumerWidget {
       Future.delayed(const Duration(milliseconds: 200), () {
         isPressed.value = false;
       });
-    });
+    }).pad(2);
   }
 }

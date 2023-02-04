@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:micro_simulator/features/main/enums/micro_active_input_type.dart';
 import 'package:micro_simulator/features/main/providers/states/micro_input_field_provider_state.dart';
 
 final providerOfMicroInputField = StateNotifierProvider<MicroInputFieldProvider,
@@ -11,14 +12,17 @@ class MicroInputFieldProvider
   MicroInputFieldProvider()
       : super(
           const MicroInputFieldProviderState(
-            address: '',
-            value: '',
+            address: '--8085',
+            value: 'SR',
+            activeInput: MicroActiveInput.unknown,
+            addressValuePair: <String, String>{},
           ),
         );
 
   void reset() => state = state.copyWith(
-        address: '',
-        value: '',
+        address: '--8085',
+        value: 'SR',
+        activeInput: MicroActiveInput.unknown,
       );
 
   void resetAddress() => state = state.copyWith(
@@ -35,5 +39,20 @@ class MicroInputFieldProvider
 
   void setValue(final String value) => state = state.copyWith(
         value: '${state.value}$value',
+      );
+
+  void makeAddressActive() => state = state.copyWith(
+        activeInput: MicroActiveInput.address,
+        address: '....',
+      );
+
+  void makeValueActive() => state = state.copyWith(
+        activeInput: MicroActiveInput.value,
+        value: '..',
+      );
+
+  void saveAddressValue() => state = state.copyWith(
+        addressValuePair: Map<String, String>.from(state.addressValuePair)
+          ..addAll({state.address: state.value}),
       );
 }

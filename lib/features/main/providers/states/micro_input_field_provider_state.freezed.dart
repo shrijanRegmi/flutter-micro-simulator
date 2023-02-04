@@ -18,6 +18,9 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$MicroInputFieldProviderState {
   String get address => throw _privateConstructorUsedError;
   String get value => throw _privateConstructorUsedError;
+  MicroActiveInput get activeInput => throw _privateConstructorUsedError;
+  Map<String, String> get addressValuePair =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MicroInputFieldProviderStateCopyWith<MicroInputFieldProviderState>
@@ -32,7 +35,11 @@ abstract class $MicroInputFieldProviderStateCopyWith<$Res> {
       _$MicroInputFieldProviderStateCopyWithImpl<$Res,
           MicroInputFieldProviderState>;
   @useResult
-  $Res call({String address, String value});
+  $Res call(
+      {String address,
+      String value,
+      MicroActiveInput activeInput,
+      Map<String, String> addressValuePair});
 }
 
 /// @nodoc
@@ -51,6 +58,8 @@ class _$MicroInputFieldProviderStateCopyWithImpl<$Res,
   $Res call({
     Object? address = null,
     Object? value = null,
+    Object? activeInput = null,
+    Object? addressValuePair = null,
   }) {
     return _then(_value.copyWith(
       address: null == address
@@ -61,6 +70,14 @@ class _$MicroInputFieldProviderStateCopyWithImpl<$Res,
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
               as String,
+      activeInput: null == activeInput
+          ? _value.activeInput
+          : activeInput // ignore: cast_nullable_to_non_nullable
+              as MicroActiveInput,
+      addressValuePair: null == addressValuePair
+          ? _value.addressValuePair
+          : addressValuePair // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
     ) as $Val);
   }
 }
@@ -74,7 +91,11 @@ abstract class _$$_MicroInputFieldProviderStateCopyWith<$Res>
       __$$_MicroInputFieldProviderStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String address, String value});
+  $Res call(
+      {String address,
+      String value,
+      MicroActiveInput activeInput,
+      Map<String, String> addressValuePair});
 }
 
 /// @nodoc
@@ -92,6 +113,8 @@ class __$$_MicroInputFieldProviderStateCopyWithImpl<$Res>
   $Res call({
     Object? address = null,
     Object? value = null,
+    Object? activeInput = null,
+    Object? addressValuePair = null,
   }) {
     return _then(_$_MicroInputFieldProviderState(
       address: null == address
@@ -102,6 +125,14 @@ class __$$_MicroInputFieldProviderStateCopyWithImpl<$Res>
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
               as String,
+      activeInput: null == activeInput
+          ? _value.activeInput
+          : activeInput // ignore: cast_nullable_to_non_nullable
+              as MicroActiveInput,
+      addressValuePair: null == addressValuePair
+          ? _value._addressValuePair
+          : addressValuePair // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
     ));
   }
 }
@@ -110,16 +141,29 @@ class __$$_MicroInputFieldProviderStateCopyWithImpl<$Res>
 
 class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
   const _$_MicroInputFieldProviderState(
-      {required this.address, required this.value});
+      {required this.address,
+      required this.value,
+      required this.activeInput,
+      required final Map<String, String> addressValuePair})
+      : _addressValuePair = addressValuePair;
 
   @override
   final String address;
   @override
   final String value;
+  @override
+  final MicroActiveInput activeInput;
+  final Map<String, String> _addressValuePair;
+  @override
+  Map<String, String> get addressValuePair {
+    if (_addressValuePair is EqualUnmodifiableMapView) return _addressValuePair;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_addressValuePair);
+  }
 
   @override
   String toString() {
-    return 'MicroInputFieldProviderState(address: $address, value: $value)';
+    return 'MicroInputFieldProviderState(address: $address, value: $value, activeInput: $activeInput, addressValuePair: $addressValuePair)';
   }
 
   @override
@@ -128,11 +172,16 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
         (other.runtimeType == runtimeType &&
             other is _$_MicroInputFieldProviderState &&
             (identical(other.address, address) || other.address == address) &&
-            (identical(other.value, value) || other.value == value));
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.activeInput, activeInput) ||
+                other.activeInput == activeInput) &&
+            const DeepCollectionEquality()
+                .equals(other._addressValuePair, _addressValuePair));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, address, value);
+  int get hashCode => Object.hash(runtimeType, address, value, activeInput,
+      const DeepCollectionEquality().hash(_addressValuePair));
 
   @JsonKey(ignore: true)
   @override
@@ -145,13 +194,20 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
 abstract class _MicroInputFieldProviderState
     implements MicroInputFieldProviderState {
   const factory _MicroInputFieldProviderState(
-      {required final String address,
-      required final String value}) = _$_MicroInputFieldProviderState;
+          {required final String address,
+          required final String value,
+          required final MicroActiveInput activeInput,
+          required final Map<String, String> addressValuePair}) =
+      _$_MicroInputFieldProviderState;
 
   @override
   String get address;
   @override
   String get value;
+  @override
+  MicroActiveInput get activeInput;
+  @override
+  Map<String, String> get addressValuePair;
   @override
   @JsonKey(ignore: true)
   _$$_MicroInputFieldProviderStateCopyWith<_$_MicroInputFieldProviderState>
