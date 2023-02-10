@@ -1,7 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/features/main/enums/micro_active_input_type.dart';
 import 'package:micro_simulator/features/main/enums/micro_key_action_type.dart';
+import 'package:micro_simulator/features/main/enums/micro_register_type.dart';
 import 'package:micro_simulator/features/main/helpers/common_helper.dart';
+import 'package:micro_simulator/features/main/models/micro_opcode_model.dart';
 import 'package:micro_simulator/features/main/providers/micro_input_field_provider.dart';
 import 'package:micro_simulator/features/main/providers/micro_volumn_button_provider.dart';
 import 'package:micro_simulator/features/main/providers/states/micro_input_field_provider_state.dart';
@@ -39,12 +41,20 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
 
   void setAddress(final MicroKeyAction keyAction) {
     switch (keyAction) {
+      case MicroKeyAction.reset:
+        return onResetBtnPressed(keyAction);
       case MicroKeyAction.next:
         return onNextBtnPressed(keyAction);
       case MicroKeyAction.prev:
         return onPrevBtnPressed(keyAction);
       case MicroKeyAction.examMem:
         return onExamMemPressed(keyAction);
+      case MicroKeyAction.examReg:
+        return onExamRegPressed(keyAction);
+      case MicroKeyAction.go:
+        return onGoBtnPressed(keyAction);
+      case MicroKeyAction.exec:
+        return onExecBtnPressed(keyAction);
       default:
         return onInputKeysPressed(keyAction);
     }
@@ -67,85 +77,224 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
     final currentActiveInput = _microInputFieldProviderState.activeInput;
 
     if (ksMicroKeyAction.containsKey(keyAction)) {
-      if (keyAction == MicroKeyAction.reset) {
-        _microInputFieldProvider.reset();
-      } else {
-        if (currentActiveInput == MicroActiveInput.address) {
-          if (currentAddress.contains('....')) {
-            _microInputFieldProvider
-              ..resetAddress()
-              ..setAddress(ksMicroKeyAction[keyAction]!);
-          } else if (currentAddress.length < 4) {
-            _microInputFieldProvider.setAddress(ksMicroKeyAction[keyAction]!);
-          } else {
-            _microInputFieldProvider
-              ..resetAddress()
-              ..setAddress(ksMicroKeyAction[keyAction]!);
-          }
-        } else if (currentActiveInput == MicroActiveInput.value) {
-          if (currentValue.contains('..')) {
-            _microInputFieldProvider
-              ..resetValue()
-              ..setValue(ksMicroKeyAction[keyAction]!);
-          } else if (currentValue.length < 2) {
-            _microInputFieldProvider.setValue(ksMicroKeyAction[keyAction]!);
-          } else {
-            _microInputFieldProvider
-              ..resetValue()
-              ..setValue(ksMicroKeyAction[keyAction]!);
-          }
+      if (currentActiveInput == MicroActiveInput.address) {
+        if (currentAddress.contains('....')) {
+          _microInputFieldProvider
+            ..resetAddress()
+            ..setAddress(ksMicroKeyAction[keyAction]!);
+        } else if (currentAddress.length < 4) {
+          _microInputFieldProvider.setAddress(ksMicroKeyAction[keyAction]!);
+        } else {
+          _microInputFieldProvider
+            ..resetAddress()
+            ..setAddress(ksMicroKeyAction[keyAction]!);
+        }
+      } else if (currentActiveInput == MicroActiveInput.value) {
+        if (currentValue.contains('..')) {
+          _microInputFieldProvider
+            ..resetValue()
+            ..setValue(ksMicroKeyAction[keyAction]!);
+        } else if (currentValue.length < 2) {
+          _microInputFieldProvider.setValue(ksMicroKeyAction[keyAction]!);
+        } else {
+          _microInputFieldProvider
+            ..resetValue()
+            ..setValue(ksMicroKeyAction[keyAction]!);
         }
       }
     }
   }
 
+  void onResetBtnPressed(final MicroKeyAction keyAction) {
+    _microInputFieldProvider
+      ..reset()
+      ..resetRegisters();
+  }
+
   void onNextBtnPressed(final MicroKeyAction keyAction) {
     final currentAddress = _microInputFieldProviderState.address;
     final currentActiveInput = _microInputFieldProviderState.activeInput;
-    final currentAddressValuePair =
-        _microInputFieldProviderState.addressValuePair;
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+    final lastOperatorKeyAction =
+        _microInputFieldProviderState.lastOperatorKeyAction;
+    final lastShownRegister = _microInputFieldProviderState.lastShownRegister;
+    final currentRegisters = _microInputFieldProviderState.registers;
 
-    if (currentActiveInput != MicroActiveInput.value) {
-      _microInputFieldProvider.makeValueActive();
-    } else {
-      final nextAddress = CommonHelper.convertToHex(
-        currentAddress,
-        withIncrement: 1,
-      );
-      final addressContainsValue = currentAddressValuePair[nextAddress] != null;
-
-      _microInputFieldProvider
-        ..saveAddressValue()
-        ..resetAddress()
-        ..setAddress(nextAddress);
-      if (addressContainsValue) {
-        _microInputFieldProvider
-          ..resetValue()
-          ..setValue(currentAddressValuePair[nextAddress]!);
-      } else {
+    if (lastOperatorKeyAction == MicroKeyAction.examMem) {
+      if (currentActiveInput != MicroActiveInput.value) {
+        final addressContainsValue =
+            currentBeforeExecution[currentAddress] != null;
         _microInputFieldProvider.makeValueActive();
+
+        if (addressContainsValue) {
+          _microInputFieldProvider
+            ..resetValue()
+            ..setValue(
+              currentBeforeExecution[currentAddress]!,
+            );
+        }
+      } else {
+        final nextAddress = CommonHelper.convertToHex(
+          currentAddress,
+          withIncrement: 1,
+        );
+        final addressContainsValue =
+            currentBeforeExecution[nextAddress] != null;
+
+        _microInputFieldProvider
+          ..saveToBeforeExecution()
+          ..resetAddress()
+          ..setAddress(nextAddress);
+        if (addressContainsValue) {
+          _microInputFieldProvider
+            ..resetValue()
+            ..setValue(currentBeforeExecution[nextAddress]!);
+        } else {
+          _microInputFieldProvider.makeValueActive();
+        }
+      }
+    } else if (lastOperatorKeyAction == MicroKeyAction.examReg) {
+      if (lastShownRegister.index < MicroRegister.values.length - 1) {
+        final nextRegister = MicroRegister.values[lastShownRegister.index + 1];
+        final registerContainsValue = currentRegisters[nextRegister] != null;
+
+        _microInputFieldProvider
+          ..saveToBeforeExecution()
+          ..resetAddress()
+          ..setLastShownRegister(nextRegister)
+          ..setAddress(ksMicroRegister[nextRegister] ?? 'NA');
+        if (registerContainsValue) {
+          _microInputFieldProvider
+            ..resetValue()
+            ..setValue(currentRegisters[nextRegister]!);
+        } else {
+          _microInputFieldProvider.makeValueActive();
+        }
       }
     }
   }
 
   void onPrevBtnPressed(final MicroKeyAction keyAction) {
     final currentAddress = _microInputFieldProviderState.address;
-    final currentAddressValuePair =
-        _microInputFieldProviderState.addressValuePair;
-    final prevAddress = CommonHelper.convertToHex(
-      currentAddress,
-      withIncrement: -1,
-    );
-    _microInputFieldProvider
-      ..resetAddress()
-      ..setAddress(prevAddress)
-      ..resetValue()
-      ..setValue(currentAddressValuePair[prevAddress] ?? '..');
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+    final lastOperatorKeyAction =
+        _microInputFieldProviderState.lastOperatorKeyAction;
+    final lastShownRegister = _microInputFieldProviderState.lastShownRegister;
+    final currentRegisters = _microInputFieldProviderState.registers;
+
+    if (lastOperatorKeyAction == MicroKeyAction.examMem) {
+      final prevAddress = CommonHelper.convertToHex(
+        currentAddress,
+        withIncrement: -1,
+      );
+      _microInputFieldProvider
+        ..resetAddress()
+        ..setAddress(prevAddress)
+        ..resetValue()
+        ..setValue(currentBeforeExecution[prevAddress] ?? '..');
+    } else if (lastOperatorKeyAction == MicroKeyAction.examReg) {
+      if (lastShownRegister.index > 1) {
+        final prevRegister = MicroRegister.values[lastShownRegister.index - 1];
+        final registerContainsValue = currentRegisters[prevRegister] != null;
+
+        _microInputFieldProvider
+          ..saveToBeforeExecution()
+          ..resetAddress()
+          ..setLastShownRegister(prevRegister)
+          ..setAddress(ksMicroRegister[prevRegister] ?? 'NA');
+        if (registerContainsValue) {
+          _microInputFieldProvider
+            ..resetValue()
+            ..setValue(currentRegisters[prevRegister]!);
+        } else {
+          _microInputFieldProvider.makeValueActive();
+        }
+      }
+    }
   }
 
   void onExamMemPressed(final MicroKeyAction keyAction) {
     _microInputFieldProvider
+      ..setLastOperatorKeyAction(keyAction)
       ..resetValue()
       ..makeAddressActive();
+  }
+
+  void onExamRegPressed(final MicroKeyAction keyAction) {
+    final currentRegisters = _microInputFieldProviderState.registers;
+    const register = MicroRegister.a;
+
+    _microInputFieldProvider
+      ..setLastOperatorKeyAction(keyAction)
+      ..setLastShownRegister(register)
+      ..resetAddress()
+      ..resetValue()
+      ..setAddress(ksMicroRegister[register] ?? 'NA')
+      ..setValue(currentRegisters[register] ?? '..');
+  }
+
+  void onGoBtnPressed(final MicroKeyAction keyAction) {
+    _microInputFieldProvider
+      ..setLastOperatorKeyAction(keyAction)
+      ..resetValue()
+      ..makeAddressActive();
+  }
+
+  void onExecBtnPressed(final MicroKeyAction keyAction) {
+    final lastOperatorKeyAction =
+        _microInputFieldProviderState.lastOperatorKeyAction;
+
+    if (lastOperatorKeyAction == MicroKeyAction.go) {
+      _microInputFieldProvider
+        ..reset()
+        ..resetAddress()
+        ..resetValue()
+        ..setLastOperatorKeyAction(keyAction)
+        ..setAddress('.');
+
+      // execute the opcodes here
+      execOpcodes();
+    }
+  }
+
+  void execOpcodes() {
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+    currentBeforeExecution.forEach((address, value) {
+      final opcode = _microInputFieldProvider.findOpcode(value);
+
+      switch (opcode.name) {
+        case 'MVI A':
+          return execMVIA(address, opcode);
+        case 'RST 5':
+          return execRST5(address, opcode);
+        default:
+      }
+    });
+  }
+
+  void execMVIA(final String address, final MicroOpcode opcode) {
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+
+    final nextAddress = CommonHelper.convertToHex(
+      address,
+      withIncrement: 1,
+    );
+
+    if (currentBeforeExecution[nextAddress] != null) {
+      _microInputFieldProvider.setRegister(
+        MicroRegister.a,
+        currentBeforeExecution[nextAddress]!,
+      );
+
+      print(_microInputFieldProviderState.registers);
+    }
+  }
+
+  void execRST5(final String address, final MicroOpcode opcode) {
+    _microInputFieldProvider.reset();
   }
 }

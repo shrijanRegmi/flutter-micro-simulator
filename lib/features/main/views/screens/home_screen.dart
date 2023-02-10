@@ -76,7 +76,7 @@ class HomeScreen extends HookConsumerWidget {
                           _addressAndOpcodeBuilder(),
                           const MicroSearchButton(),
                         ],
-                      ).pY(11),
+                      ).pY(9),
                     ],
                   ),
                 ),

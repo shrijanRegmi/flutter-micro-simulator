@@ -1,4 +1,5 @@
 enum MicroKeyAction {
+  unknown,
   reset,
   kb,
   f1,

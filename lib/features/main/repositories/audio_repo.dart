@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -22,6 +23,10 @@ class AudioRepoImpl extends AudioRepo {
   @override
   Future<void> playClickSound() async {
     try {
+      if (Platform.isWindows) {
+        log('Skipping: Click Sound for Windows');
+        return;
+      }
       player.setAsset('assets/audio/click_soft.wav');
       await player.play();
     } catch (e) {
