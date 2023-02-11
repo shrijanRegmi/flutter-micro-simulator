@@ -162,7 +162,6 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         final registerContainsValue = currentRegisters[nextRegister] != null;
 
         _microInputFieldProvider
-          ..saveToBeforeExecution()
           ..resetAddress()
           ..setLastShownRegister(nextRegister)
           ..setAddress(ksMicroRegister[nextRegister] ?? 'NA');
@@ -202,7 +201,6 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         final registerContainsValue = currentRegisters[prevRegister] != null;
 
         _microInputFieldProvider
-          ..saveToBeforeExecution()
           ..resetAddress()
           ..setLastShownRegister(prevRegister)
           ..setAddress(ksMicroRegister[prevRegister] ?? 'NA');
@@ -237,6 +235,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
       ..resetAddress()
       ..resetValue()
       ..setAddress(ksMicroRegister[register] ?? 'NA')
+      ..setRegister(register, registerValue)
       ..setValue(registerValue);
   }
 
@@ -278,13 +277,12 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
       if (value != null) {
         final opcode = _microInputFieldProvider.findOpcode(value);
         bytes++;
-        if (bytes == mainOpcode?.bytes) {
-          bytes = 0;
+        if (bytes < (mainOpcode?.bytes ?? 0)) {
           if ((mainOpcode?.bytes ?? 0) > 1) {
-            mainOpcode = null;
             continue;
           }
         }
+        bytes = 0;
         mainOpcode = opcode;
         switch (opcode.category) {
           case MicroOpcodeCategory.mvi:
@@ -322,43 +320,43 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
     final currentBeforeExecution =
         _microInputFieldProviderState.beforeExecution;
 
+    var register = MicroRegister.unknown;
+
+    switch (opcode.name) {
+      case MicroOpcodeName.mviA:
+        register = MicroRegister.a;
+        break;
+      case MicroOpcodeName.mviB:
+        register = MicroRegister.b;
+        break;
+      case MicroOpcodeName.mviC:
+        register = MicroRegister.c;
+        break;
+      case MicroOpcodeName.mviD:
+        register = MicroRegister.d;
+        break;
+      case MicroOpcodeName.mviE:
+        register = MicroRegister.e;
+        break;
+      case MicroOpcodeName.mviH:
+        register = MicroRegister.h;
+        break;
+      case MicroOpcodeName.mviL:
+        register = MicroRegister.l;
+        break;
+      case MicroOpcodeName.mviM:
+        register = MicroRegister.m;
+        break;
+      default:
+        register = MicroRegister.unknown;
+    }
+
     final nextAddress = CommonHelper.convertToIncrementedHex(
       address,
       withIncrement: 1,
     );
 
     if (currentBeforeExecution[nextAddress] != null) {
-      var register = MicroRegister.a;
-
-      switch (opcode.name) {
-        case MicroOpcodeName.mviA:
-          register = MicroRegister.a;
-          break;
-        case MicroOpcodeName.mviB:
-          register = MicroRegister.b;
-          break;
-        case MicroOpcodeName.mviC:
-          register = MicroRegister.c;
-          break;
-        case MicroOpcodeName.mviD:
-          register = MicroRegister.d;
-          break;
-        case MicroOpcodeName.mviE:
-          register = MicroRegister.e;
-          break;
-        case MicroOpcodeName.mviH:
-          register = MicroRegister.h;
-          break;
-        case MicroOpcodeName.mviL:
-          register = MicroRegister.l;
-          break;
-        case MicroOpcodeName.mviM:
-          register = MicroRegister.m;
-          break;
-        default:
-          register = MicroRegister.a;
-      }
-
       _microInputFieldProvider.setRegister(
         register,
         currentBeforeExecution[nextAddress]!,
@@ -369,6 +367,27 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
   void execLXI(final String address, final MicroOpcode opcode) {
     final currentBeforeExecution =
         _microInputFieldProviderState.beforeExecution;
+
+    var register1 = MicroRegister.unknown;
+    var register2 = MicroRegister.unknown;
+
+    switch (opcode.name) {
+      case MicroOpcodeName.lxiB:
+        register1 = MicroRegister.b;
+        register2 = MicroRegister.c;
+        break;
+      case MicroOpcodeName.lxiD:
+        register1 = MicroRegister.d;
+        register2 = MicroRegister.e;
+        break;
+      case MicroOpcodeName.lxiH:
+        register1 = MicroRegister.h;
+        register2 = MicroRegister.l;
+        break;
+      default:
+        register1 = MicroRegister.unknown;
+        register2 = MicroRegister.unknown;
+    }
 
     final nextAddress1 = CommonHelper.convertToIncrementedHex(
       address,
@@ -382,27 +401,6 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
 
     if (currentBeforeExecution[nextAddress1] != null &&
         currentBeforeExecution[nextAddress2] != null) {
-      var register1 = MicroRegister.unknown;
-      var register2 = MicroRegister.unknown;
-
-      switch (opcode.name) {
-        case MicroOpcodeName.lxiB:
-          register1 = MicroRegister.b;
-          register2 = MicroRegister.c;
-          break;
-        case MicroOpcodeName.lxiD:
-          register1 = MicroRegister.d;
-          register2 = MicroRegister.e;
-          break;
-        case MicroOpcodeName.lxiH:
-          register1 = MicroRegister.h;
-          register2 = MicroRegister.l;
-          break;
-        default:
-          register1 = MicroRegister.unknown;
-          register2 = MicroRegister.unknown;
-      }
-
       _microInputFieldProvider
         ..setRegister(
           register1,
@@ -418,7 +416,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
   void execINR(final String address, final MicroOpcode opcode) {
     final currentRegisters = _microInputFieldProviderState.registers;
 
-    var register = MicroRegister.a;
+    var register = MicroRegister.unknown;
 
     switch (opcode.name) {
       case MicroOpcodeName.inrA:
@@ -446,7 +444,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         register = MicroRegister.m;
         break;
       default:
-        register = MicroRegister.a;
+        register = MicroRegister.unknown;
     }
 
     if (currentRegisters[register] != null) {
@@ -506,7 +504,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
   void execDCR(final String address, final MicroOpcode opcode) {
     final currentRegisters = _microInputFieldProviderState.registers;
 
-    var register = MicroRegister.a;
+    var register = MicroRegister.unknown;
 
     switch (opcode.name) {
       case MicroOpcodeName.inrA:
@@ -534,7 +532,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         register = MicroRegister.m;
         break;
       default:
-        register = MicroRegister.a;
+        register = MicroRegister.unknown;
     }
 
     if (currentRegisters[register] != null) {

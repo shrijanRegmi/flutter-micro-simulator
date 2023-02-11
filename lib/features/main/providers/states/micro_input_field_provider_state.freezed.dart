@@ -23,6 +23,8 @@ mixin _$MicroInputFieldProviderState {
   Map<String, String> get afterExecution => throw _privateConstructorUsedError;
   Map<MicroRegister, String> get registers =>
       throw _privateConstructorUsedError;
+  Map<MicroRegister, String> get initialRegisters =>
+      throw _privateConstructorUsedError;
   MicroKeyAction get lastOperatorKeyAction =>
       throw _privateConstructorUsedError;
   MicroRegister get lastShownRegister => throw _privateConstructorUsedError;
@@ -47,6 +49,7 @@ abstract class $MicroInputFieldProviderStateCopyWith<$Res> {
       Map<String, String> beforeExecution,
       Map<String, String> afterExecution,
       Map<MicroRegister, String> registers,
+      Map<MicroRegister, String> initialRegisters,
       MicroKeyAction lastOperatorKeyAction,
       MicroRegister lastShownRegister});
 }
@@ -71,6 +74,7 @@ class _$MicroInputFieldProviderStateCopyWithImpl<$Res,
     Object? beforeExecution = null,
     Object? afterExecution = null,
     Object? registers = null,
+    Object? initialRegisters = null,
     Object? lastOperatorKeyAction = null,
     Object? lastShownRegister = null,
   }) {
@@ -98,6 +102,10 @@ class _$MicroInputFieldProviderStateCopyWithImpl<$Res,
       registers: null == registers
           ? _value.registers
           : registers // ignore: cast_nullable_to_non_nullable
+              as Map<MicroRegister, String>,
+      initialRegisters: null == initialRegisters
+          ? _value.initialRegisters
+          : initialRegisters // ignore: cast_nullable_to_non_nullable
               as Map<MicroRegister, String>,
       lastOperatorKeyAction: null == lastOperatorKeyAction
           ? _value.lastOperatorKeyAction
@@ -127,6 +135,7 @@ abstract class _$$_MicroInputFieldProviderStateCopyWith<$Res>
       Map<String, String> beforeExecution,
       Map<String, String> afterExecution,
       Map<MicroRegister, String> registers,
+      Map<MicroRegister, String> initialRegisters,
       MicroKeyAction lastOperatorKeyAction,
       MicroRegister lastShownRegister});
 }
@@ -150,6 +159,7 @@ class __$$_MicroInputFieldProviderStateCopyWithImpl<$Res>
     Object? beforeExecution = null,
     Object? afterExecution = null,
     Object? registers = null,
+    Object? initialRegisters = null,
     Object? lastOperatorKeyAction = null,
     Object? lastShownRegister = null,
   }) {
@@ -178,6 +188,10 @@ class __$$_MicroInputFieldProviderStateCopyWithImpl<$Res>
           ? _value._registers
           : registers // ignore: cast_nullable_to_non_nullable
               as Map<MicroRegister, String>,
+      initialRegisters: null == initialRegisters
+          ? _value._initialRegisters
+          : initialRegisters // ignore: cast_nullable_to_non_nullable
+              as Map<MicroRegister, String>,
       lastOperatorKeyAction: null == lastOperatorKeyAction
           ? _value.lastOperatorKeyAction
           : lastOperatorKeyAction // ignore: cast_nullable_to_non_nullable
@@ -200,11 +214,13 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
       required final Map<String, String> beforeExecution,
       required final Map<String, String> afterExecution,
       required final Map<MicroRegister, String> registers,
+      required final Map<MicroRegister, String> initialRegisters,
       required this.lastOperatorKeyAction,
       required this.lastShownRegister})
       : _beforeExecution = beforeExecution,
         _afterExecution = afterExecution,
-        _registers = registers;
+        _registers = registers,
+        _initialRegisters = initialRegisters;
 
   @override
   final String address;
@@ -236,6 +252,14 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
     return EqualUnmodifiableMapView(_registers);
   }
 
+  final Map<MicroRegister, String> _initialRegisters;
+  @override
+  Map<MicroRegister, String> get initialRegisters {
+    if (_initialRegisters is EqualUnmodifiableMapView) return _initialRegisters;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_initialRegisters);
+  }
+
   @override
   final MicroKeyAction lastOperatorKeyAction;
   @override
@@ -243,7 +267,7 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
 
   @override
   String toString() {
-    return 'MicroInputFieldProviderState(address: $address, value: $value, activeInput: $activeInput, beforeExecution: $beforeExecution, afterExecution: $afterExecution, registers: $registers, lastOperatorKeyAction: $lastOperatorKeyAction, lastShownRegister: $lastShownRegister)';
+    return 'MicroInputFieldProviderState(address: $address, value: $value, activeInput: $activeInput, beforeExecution: $beforeExecution, afterExecution: $afterExecution, registers: $registers, initialRegisters: $initialRegisters, lastOperatorKeyAction: $lastOperatorKeyAction, lastShownRegister: $lastShownRegister)';
   }
 
   @override
@@ -261,6 +285,8 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
                 .equals(other._afterExecution, _afterExecution) &&
             const DeepCollectionEquality()
                 .equals(other._registers, _registers) &&
+            const DeepCollectionEquality()
+                .equals(other._initialRegisters, _initialRegisters) &&
             (identical(other.lastOperatorKeyAction, lastOperatorKeyAction) ||
                 other.lastOperatorKeyAction == lastOperatorKeyAction) &&
             (identical(other.lastShownRegister, lastShownRegister) ||
@@ -276,6 +302,7 @@ class _$_MicroInputFieldProviderState implements _MicroInputFieldProviderState {
       const DeepCollectionEquality().hash(_beforeExecution),
       const DeepCollectionEquality().hash(_afterExecution),
       const DeepCollectionEquality().hash(_registers),
+      const DeepCollectionEquality().hash(_initialRegisters),
       lastOperatorKeyAction,
       lastShownRegister);
 
@@ -296,6 +323,7 @@ abstract class _MicroInputFieldProviderState
           required final Map<String, String> beforeExecution,
           required final Map<String, String> afterExecution,
           required final Map<MicroRegister, String> registers,
+          required final Map<MicroRegister, String> initialRegisters,
           required final MicroKeyAction lastOperatorKeyAction,
           required final MicroRegister lastShownRegister}) =
       _$_MicroInputFieldProviderState;
@@ -312,6 +340,8 @@ abstract class _MicroInputFieldProviderState
   Map<String, String> get afterExecution;
   @override
   Map<MicroRegister, String> get registers;
+  @override
+  Map<MicroRegister, String> get initialRegisters;
   @override
   MicroKeyAction get lastOperatorKeyAction;
   @override

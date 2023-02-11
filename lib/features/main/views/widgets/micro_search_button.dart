@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/features/main/views/widgets/micro_rounded_button.dart';
 import 'package:micro_simulator/features/main/views/widgets/micro_search_input_field.dart';
+import 'package:micro_simulator/features/main/views/widgets/micro_search_results_list.dart';
 import 'package:micro_simulator/utils/app_colors.dart';
 
 class MicroSearchButton extends HookConsumerWidget {
@@ -25,7 +26,14 @@ class MicroSearchButton extends HookConsumerWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 50.h,
+                    height: 20.h,
+                  ),
+                  const Material(
+                    color: AppColors.colorTransparent,
+                    child: MicroSearchResultsList(),
+                  ),
+                  SizedBox(
+                    height: 15.h,
                   ),
                   Material(
                     shape: RoundedRectangleBorder(
@@ -37,6 +45,13 @@ class MicroSearchButton extends HookConsumerWidget {
                       ),
                       child: const MicroSearchInputField(),
                     ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: const SizedBox(),
                   ),
                 ],
               ),

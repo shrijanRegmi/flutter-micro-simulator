@@ -14,6 +14,7 @@ class MicroInputFieldProviderState with _$MicroInputFieldProviderState {
     required final Map<String, String> beforeExecution,
     required final Map<String, String> afterExecution,
     required final Map<MicroRegister, String> registers,
+    required final Map<MicroRegister, String> initialRegisters,
     required final MicroKeyAction lastOperatorKeyAction,
     required final MicroRegister lastShownRegister,
   }) = _MicroInputFieldProviderState;

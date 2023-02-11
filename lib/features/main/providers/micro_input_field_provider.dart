@@ -26,10 +26,13 @@ class MicroInputFieldProvider
             beforeExecution: <String, String>{},
             afterExecution: <String, String>{},
             registers: <MicroRegister, String>{},
+            initialRegisters: <MicroRegister, String>{},
             lastOperatorKeyAction: MicroKeyAction.unknown,
             lastShownRegister: MicroRegister.unknown,
           ),
-        );
+        ) {
+    _initializeRegisters();
+  }
 
   void reset() => state = state.copyWith(
         address: '--8085',
@@ -47,7 +50,7 @@ class MicroInputFieldProvider
       );
 
   void resetRegisters() => state = state.copyWith(
-        registers: <MicroRegister, String>{},
+        registers: state.initialRegisters,
       );
 
   void setAddress(final String address) => state = state.copyWith(
@@ -176,5 +179,18 @@ class MicroInputFieldProvider
     }
     debugPrint('Found value - $value in search attempt - $counter');
     return value;
+  }
+
+  void _initializeRegisters() {
+    for (final register in MicroRegister.values) {
+      final rand = getRandomOpcodeForRegister();
+      state = state.copyWith(
+        initialRegisters:
+            Map<MicroRegister, String>.from(state.initialRegisters)
+              ..addAll({register: rand}),
+        registers: Map<MicroRegister, String>.from(state.registers)
+          ..addAll({register: rand}),
+      );
+    }
   }
 }

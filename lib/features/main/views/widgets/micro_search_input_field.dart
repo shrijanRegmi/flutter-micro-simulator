@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/app/extensions/context_extension.dart';
@@ -13,8 +14,7 @@ class MicroSearchInputField extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final messageController = ref.watch(providerOfMicroSearchInputField);
-
+    final searchController = useTextEditingController();
     final bgColor = context.theme.scaffoldBackgroundColor;
     const offset = Offset(10.0, 10.0);
     const blur = 10.0;
@@ -51,8 +51,8 @@ class MicroSearchInputField extends HookConsumerWidget {
               child: TextFormField(
                 autofocus: true,
                 cursorColor: AppColors.colorGrey,
+                controller: searchController,
                 textCapitalization: TextCapitalization.characters,
-                controller: messageController,
                 style: const TextStyle(
                   height: 1.4,
                   fontWeight: FontWeight.bold,
@@ -67,25 +67,27 @@ class MicroSearchInputField extends HookConsumerWidget {
                     color: AppColors.colorGrey,
                   ),
                 ),
+                onChanged: ref
+                    .read(providerOfMicroSearchInputField.notifier)
+                    .onChanged,
               ).pB(5),
             ),
             SizedBox(
               width: 10.w,
             ),
-            MicroRoundedButton(
-              icon: const Icon(
-                Icons.arrow_forward_rounded,
-                color: AppColors.colorGrey,
-                size: 20,
+            if (ref.watch(providerOfMicroSearchInputField).isNotEmpty)
+              MicroRoundedButton(
+                icon: const Icon(
+                  Icons.clear_rounded,
+                  color: AppColors.colorGrey,
+                  size: 20,
+                ),
+                size: 30,
+                onPressed: () {
+                  searchController.text = '';
+                  ref.read(providerOfMicroSearchInputField.notifier).reset();
+                },
               ),
-              size: 30,
-              onPressed: () {
-                ref
-                    .read(providerOfMicroSearchInputField.notifier)
-                    .onSubmitSearch();
-                context.pop();
-              },
-            ),
           ],
         ),
       ),
