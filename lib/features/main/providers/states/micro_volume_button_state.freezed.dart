@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$MicroVolumnButtonState {
+mixin _$MicroVolumeButtonState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(bool isMuted) onValue,
@@ -57,17 +57,17 @@ mixin _$MicroVolumnButtonState {
 }
 
 /// @nodoc
-abstract class $MicroVolumnButtonStateCopyWith<$Res> {
-  factory $MicroVolumnButtonStateCopyWith(MicroVolumnButtonState value,
-          $Res Function(MicroVolumnButtonState) then) =
-      _$MicroVolumnButtonStateCopyWithImpl<$Res, MicroVolumnButtonState>;
+abstract class $MicroVolumeButtonStateCopyWith<$Res> {
+  factory $MicroVolumeButtonStateCopyWith(MicroVolumeButtonState value,
+          $Res Function(MicroVolumeButtonState) then) =
+      _$MicroVolumeButtonStateCopyWithImpl<$Res, MicroVolumeButtonState>;
 }
 
 /// @nodoc
-class _$MicroVolumnButtonStateCopyWithImpl<$Res,
-        $Val extends MicroVolumnButtonState>
-    implements $MicroVolumnButtonStateCopyWith<$Res> {
-  _$MicroVolumnButtonStateCopyWithImpl(this._value, this._then);
+class _$MicroVolumeButtonStateCopyWithImpl<$Res,
+        $Val extends MicroVolumeButtonState>
+    implements $MicroVolumeButtonStateCopyWith<$Res> {
+  _$MicroVolumeButtonStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -86,7 +86,7 @@ abstract class _$$_OnValueCopyWith<$Res> {
 
 /// @nodoc
 class __$$_OnValueCopyWithImpl<$Res>
-    extends _$MicroVolumnButtonStateCopyWithImpl<$Res, _$_OnValue>
+    extends _$MicroVolumeButtonStateCopyWithImpl<$Res, _$_OnValue>
     implements _$$_OnValueCopyWith<$Res> {
   __$$_OnValueCopyWithImpl(_$_OnValue _value, $Res Function(_$_OnValue) _then)
       : super(_value, _then);
@@ -115,7 +115,7 @@ class _$_OnValue implements _OnValue {
 
   @override
   String toString() {
-    return 'MicroVolumnButtonState.onValue(isMuted: $isMuted)';
+    return 'MicroVolumeButtonState.onValue(isMuted: $isMuted)';
   }
 
   @override
@@ -198,7 +198,7 @@ class _$_OnValue implements _OnValue {
   }
 }
 
-abstract class _OnValue implements MicroVolumnButtonState {
+abstract class _OnValue implements MicroVolumeButtonState {
   const factory _OnValue({required final bool isMuted}) = _$_OnValue;
 
   bool get isMuted;
@@ -216,7 +216,7 @@ abstract class _$$_LoadingCopyWith<$Res> {
 
 /// @nodoc
 class __$$_LoadingCopyWithImpl<$Res>
-    extends _$MicroVolumnButtonStateCopyWithImpl<$Res, _$_Loading>
+    extends _$MicroVolumeButtonStateCopyWithImpl<$Res, _$_Loading>
     implements _$$_LoadingCopyWith<$Res> {
   __$$_LoadingCopyWithImpl(_$_Loading _value, $Res Function(_$_Loading) _then)
       : super(_value, _then);
@@ -229,7 +229,7 @@ class _$_Loading implements _Loading {
 
   @override
   String toString() {
-    return 'MicroVolumnButtonState.loading()';
+    return 'MicroVolumeButtonState.loading()';
   }
 
   @override
@@ -304,6 +304,6 @@ class _$_Loading implements _Loading {
   }
 }
 
-abstract class _Loading implements MicroVolumnButtonState {
+abstract class _Loading implements MicroVolumeButtonState {
   const factory _Loading() = _$_Loading;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:micro_simulator/features/main/providers/micro_volumn_button_provider.dart';
+import 'package:micro_simulator/features/main/providers/micro_volume_button_provider.dart';
 import 'package:micro_simulator/features/main/views/widgets/micro_rounded_button.dart';
 import 'package:micro_simulator/utils/app_colors.dart';
 

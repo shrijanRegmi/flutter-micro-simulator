@@ -3,15 +3,15 @@ import 'package:micro_simulator/features/main/providers/states/micro_volume_butt
 import 'package:micro_simulator/features/main/repositories/audio_repo.dart';
 
 final providerOfMicroVolumeButton =
-    StateNotifierProvider<MicroVolumeButtonProvider, MicroVolumnButtonState>(
+    StateNotifierProvider<MicroVolumeButtonProvider, MicroVolumeButtonState>(
         (ref) {
   return MicroVolumeButtonProvider(ref: ref);
 });
 
-class MicroVolumeButtonProvider extends StateNotifier<MicroVolumnButtonState> {
+class MicroVolumeButtonProvider extends StateNotifier<MicroVolumeButtonState> {
   MicroVolumeButtonProvider({required final Ref ref})
       : _ref = ref,
-        super(const MicroVolumnButtonState.onValue(isMuted: false)) {
+        super(const MicroVolumeButtonState.onValue(isMuted: false)) {
     getMute();
   }
 
@@ -21,16 +21,16 @@ class MicroVolumeButtonProvider extends StateNotifier<MicroVolumnButtonState> {
   Future<void> setMute({
     required final bool isMuted,
   }) {
-    state = MicroVolumnButtonState.onValue(isMuted: isMuted);
+    state = MicroVolumeButtonState.onValue(isMuted: isMuted);
     return _audioRepo.setMute(
       muted: isMuted,
     );
   }
 
   Future<void> getMute() async {
-    state = const MicroVolumnButtonState.loading();
+    state = const MicroVolumeButtonState.loading();
     final val = await _audioRepo.getMute();
-    state = MicroVolumnButtonState.onValue(
+    state = MicroVolumeButtonState.onValue(
       isMuted: val,
     );
   }

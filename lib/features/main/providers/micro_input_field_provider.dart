@@ -1,7 +1,12 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/features/main/enums/micro_active_input_type.dart';
 import 'package:micro_simulator/features/main/enums/micro_key_action_type.dart';
 import 'package:micro_simulator/features/main/enums/micro_register_type.dart';
+import 'package:micro_simulator/features/main/helpers/common_helper.dart';
 import 'package:micro_simulator/features/main/models/micro_opcode_model.dart';
 import 'package:micro_simulator/features/main/providers/states/micro_input_field_provider_state.dart';
 
@@ -68,9 +73,14 @@ class MicroInputFieldProvider
         address: '....',
       );
 
-  void makeValueActive() => state = state.copyWith(
+  void makeAddressValueActive() => state = state.copyWith(
         activeInput: MicroActiveInput.value,
-        value: '..',
+        value: getRandomOpcodeForAddress(),
+      );
+
+  void makeRegisterValueActive() => state = state.copyWith(
+        activeInput: MicroActiveInput.value,
+        value: getRandomOpcodeForRegister(),
       );
 
   void saveToBeforeExecution() => state = state.copyWith(
@@ -100,5 +110,71 @@ class MicroInputFieldProvider
       orElse: MicroOpcode.unknown,
     );
     return opcode;
+  }
+
+  String getRandomOpcodeForAddress() {
+    final currentBeforeExecution = state.beforeExecution;
+
+    final rand = Random().nextInt(100);
+    String value = CommonHelper.convertToIncrementedHex(
+      rand.toRadixString(16),
+      withIncrement: 0,
+      digits: 2,
+    );
+    var alreadyPresent = currentBeforeExecution.entries
+        .where((element) => element.value == value)
+        .toList()
+        .isNotEmpty;
+    var counter = 0;
+
+    while (alreadyPresent) {
+      counter++;
+
+      final rand = Random().nextInt(100);
+      value = CommonHelper.convertToIncrementedHex(
+        rand.toRadixString(16),
+        withIncrement: 0,
+        digits: 2,
+      );
+      alreadyPresent = currentBeforeExecution.entries
+          .where((element) => element.value == value)
+          .toList()
+          .isNotEmpty;
+    }
+    debugPrint('Found value - $value in search attempt - $counter');
+    return value;
+  }
+
+  String getRandomOpcodeForRegister() {
+    final currentRegisters = state.registers;
+
+    final rand = Random().nextInt(100);
+    String value = CommonHelper.convertToIncrementedHex(
+      rand.toRadixString(16),
+      withIncrement: 0,
+      digits: 2,
+    );
+    var alreadyPresent = currentRegisters.entries
+        .where((element) => element.value == value)
+        .toList()
+        .isNotEmpty;
+    var counter = 0;
+
+    while (alreadyPresent) {
+      counter++;
+
+      final rand = Random().nextInt(100);
+      value = CommonHelper.convertToIncrementedHex(
+        rand.toRadixString(16),
+        withIncrement: 0,
+        digits: 2,
+      );
+      alreadyPresent = currentRegisters.entries
+          .where((element) => element.value == value)
+          .toList()
+          .isNotEmpty;
+    }
+    debugPrint('Found value - $value in search attempt - $counter');
+    return value;
   }
 }
