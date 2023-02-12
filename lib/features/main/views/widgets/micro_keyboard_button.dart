@@ -64,7 +64,7 @@ class MicroKeyboardButton extends HookConsumerWidget {
         ),
       ),
     ).onPressedDown((_) {
-      ref.read(providerOfMicroKeyboardButton.notifier).setAddress(keyAction);
+      ref.read(providerOfMicroKeyboardButton.notifier).onPressedBtn(keyAction);
       ref.read(providerOfMicroKeyboardButton.notifier).playClickSound();
 
       isPressed.value = true;
