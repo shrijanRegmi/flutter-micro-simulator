@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/features/main/enums/micro_active_input_type.dart';
 import 'package:micro_simulator/features/main/enums/micro_key_action_type.dart';
@@ -265,8 +267,8 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
 
   // <---- main execution code lies here ---->
   void execOpcodes() {
-    final currentBeforeExecution =
-        _microInputFieldProviderState.beforeExecution;
+    final currentBeforeExecution = SplayTreeMap<String, String>.from(
+        _microInputFieldProviderState.beforeExecution);
 
     var bytes = 0;
     MicroOpcode? mainOpcode;
@@ -277,11 +279,22 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
       if (value != null) {
         final opcode = _microInputFieldProvider.findOpcode(value);
         bytes++;
+
         if (bytes < (mainOpcode?.bytes ?? 0)) {
           if ((mainOpcode?.bytes ?? 0) > 1) {
             continue;
           }
         }
+
+        if (opcode.category == MicroOpcodeCategory.unknown) {
+          continue;
+        }
+
+        if (opcode.category == MicroOpcodeCategory.rst) {
+          execRST5(address, opcode);
+          break;
+        }
+
         bytes = 0;
         mainOpcode = opcode;
         switch (opcode.category) {
@@ -306,7 +319,22 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
           case MicroOpcodeCategory.add:
             execADD(address, opcode);
             break;
-          case MicroOpcodeCategory.rst5:
+          case MicroOpcodeCategory.adi:
+            execADI(address, opcode);
+            break;
+          case MicroOpcodeCategory.sub:
+            execSUB(address, opcode);
+            break;
+          case MicroOpcodeCategory.sui:
+            execSUI(address, opcode);
+            break;
+          case MicroOpcodeCategory.lda:
+            execLDA(address, opcode);
+            break;
+          case MicroOpcodeCategory.sta:
+            execSTA(address, opcode);
+            break;
+          case MicroOpcodeCategory.rst:
             execRST5(address, opcode);
             break;
           default:
@@ -389,26 +417,26 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         register2 = MicroRegister.unknown;
     }
 
-    final nextAddress1 = CommonHelper.convertToIncrementedHex(
+    final lsbAddress = CommonHelper.convertToIncrementedHex(
       address,
       withIncrement: 1,
     );
 
-    final nextAddress2 = CommonHelper.convertToIncrementedHex(
-      nextAddress1,
+    final msbAddress = CommonHelper.convertToIncrementedHex(
+      lsbAddress,
       withIncrement: 1,
     );
 
-    if (currentBeforeExecution[nextAddress1] != null &&
-        currentBeforeExecution[nextAddress2] != null) {
+    if (currentBeforeExecution[lsbAddress] != null &&
+        currentBeforeExecution[msbAddress] != null) {
       _microInputFieldProvider
         ..setRegister(
           register1,
-          currentBeforeExecution[nextAddress2]!,
+          currentBeforeExecution[msbAddress]!,
         )
         ..setRegister(
           register2,
-          currentBeforeExecution[nextAddress1]!,
+          currentBeforeExecution[lsbAddress]!,
         );
     }
   }
@@ -592,7 +620,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
   void execADD(final String address, final MicroOpcode opcode) {
     final currentRegisters = _microInputFieldProviderState.registers;
 
-    var register = MicroRegister.a;
+    var register = MicroRegister.unknown;
 
     switch (opcode.name) {
       case MicroOpcodeName.addA:
@@ -620,7 +648,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
         register = MicroRegister.m;
         break;
       default:
-        register = MicroRegister.a;
+        register = MicroRegister.unknown;
     }
 
     if (currentRegisters[register] != null &&
@@ -637,6 +665,176 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
       _microInputFieldProvider.setRegister(
         MicroRegister.a,
         increasedValue,
+      );
+    }
+  }
+
+  void execADI(final String address, final MicroOpcode opcode) {
+    final currentRegisters = _microInputFieldProviderState.registers;
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+
+    final nextAddress = CommonHelper.convertToIncrementedHex(
+      address,
+      withIncrement: 1,
+    );
+
+    if (currentRegisters[MicroRegister.a] != null &&
+        currentBeforeExecution[nextAddress] != null) {
+      final addressValToDecimal = CommonHelper.convertHexStringToDecimal(
+        currentBeforeExecution[nextAddress]!,
+      );
+
+      var increasedValue = CommonHelper.convertToIncrementedHex(
+        currentRegisters[MicroRegister.a]!,
+        withIncrement: addressValToDecimal,
+        digits: 2,
+      );
+
+      _microInputFieldProvider.setRegister(
+        MicroRegister.a,
+        increasedValue,
+      );
+    }
+  }
+
+  void execSUB(final String address, final MicroOpcode opcode) {
+    final currentRegisters = _microInputFieldProviderState.registers;
+
+    var register = MicroRegister.unknown;
+
+    switch (opcode.name) {
+      case MicroOpcodeName.subA:
+        register = MicroRegister.a;
+        break;
+      case MicroOpcodeName.subB:
+        register = MicroRegister.b;
+        break;
+      case MicroOpcodeName.subC:
+        register = MicroRegister.c;
+        break;
+      case MicroOpcodeName.subD:
+        register = MicroRegister.d;
+        break;
+      case MicroOpcodeName.subE:
+        register = MicroRegister.e;
+        break;
+      case MicroOpcodeName.subH:
+        register = MicroRegister.h;
+        break;
+      case MicroOpcodeName.subL:
+        register = MicroRegister.l;
+        break;
+      case MicroOpcodeName.subM:
+        register = MicroRegister.m;
+        break;
+      default:
+        register = MicroRegister.unknown;
+    }
+
+    if (currentRegisters[register] != null &&
+        currentRegisters[MicroRegister.a] != null) {
+      final registerValToDecimal = CommonHelper.convertHexStringToDecimal(
+        currentRegisters[register]!,
+      );
+      var increasedValue = CommonHelper.convertToIncrementedHex(
+        currentRegisters[MicroRegister.a]!,
+        withIncrement: -registerValToDecimal,
+        digits: 2,
+      );
+
+      _microInputFieldProvider.setRegister(
+        MicroRegister.a,
+        increasedValue,
+      );
+    }
+  }
+
+  void execSUI(final String address, final MicroOpcode opcode) {
+    final currentRegisters = _microInputFieldProviderState.registers;
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+
+    final nextAddress = CommonHelper.convertToIncrementedHex(
+      address,
+      withIncrement: 1,
+    );
+
+    if (currentRegisters[MicroRegister.a] != null &&
+        currentBeforeExecution[nextAddress] != null) {
+      final addressValToDecimal = CommonHelper.convertHexStringToDecimal(
+        currentBeforeExecution[nextAddress]!,
+      );
+
+      var increasedValue = CommonHelper.convertToIncrementedHex(
+        currentRegisters[MicroRegister.a]!,
+        withIncrement: -addressValToDecimal,
+        digits: 2,
+      );
+
+      _microInputFieldProvider.setRegister(
+        MicroRegister.a,
+        increasedValue,
+      );
+    }
+  }
+
+  void execLDA(final String address, final MicroOpcode opcode) {
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+
+    final lsbAddress = CommonHelper.convertToIncrementedHex(
+      address,
+      withIncrement: 1,
+    );
+    final msbAddress = CommonHelper.convertToIncrementedHex(
+      lsbAddress,
+      withIncrement: 1,
+    );
+
+    if (currentBeforeExecution[lsbAddress] != null &&
+        currentBeforeExecution[msbAddress] != null) {
+      final requiredAddress =
+          '${currentBeforeExecution[msbAddress]}${currentBeforeExecution[lsbAddress]}';
+      final contentOfAddress = currentBeforeExecution[requiredAddress] ??
+          _microInputFieldProvider.getRandomOpcodeForAddress(
+            address: requiredAddress,
+          );
+
+      _microInputFieldProvider.setRegister(
+        MicroRegister.a,
+        contentOfAddress,
+      );
+    }
+  }
+
+  void execSTA(final String address, final MicroOpcode opcode) {
+    final currentRegisters = _microInputFieldProviderState.registers;
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+
+    final lsbAddress = CommonHelper.convertToIncrementedHex(
+      address,
+      withIncrement: 1,
+    );
+    final msbAddress = CommonHelper.convertToIncrementedHex(
+      lsbAddress,
+      withIncrement: 1,
+    );
+
+    if (currentBeforeExecution[lsbAddress] != null &&
+        currentBeforeExecution[msbAddress] != null) {
+      final contentOfRegister = currentRegisters[MicroRegister.a] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: MicroRegister.a,
+          );
+
+      final requiredAddress =
+          '${currentBeforeExecution[msbAddress]}${currentBeforeExecution[lsbAddress]}';
+
+      _microInputFieldProvider.setBeforeExecution(
+        requiredAddress,
+        contentOfRegister,
       );
     }
   }

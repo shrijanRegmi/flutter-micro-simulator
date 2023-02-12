@@ -259,56 +259,56 @@ final kMicroOpcodes = [
   const MicroOpcode(
     name: MicroOpcodeName.rst5,
     machineCode: "EF",
-    category: MicroOpcodeCategory.rst5,
+    category: MicroOpcodeCategory.rst,
     bytes: 1,
   ),
 
   //////////////////////////////////////////////////////////////////////////////
 
   const MicroOpcode(
-    name: "ADD A",
+    name: MicroOpcodeName.addA,
     machineCode: "87",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD B",
+    name: MicroOpcodeName.addB,
     machineCode: "80",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD C",
+    name: MicroOpcodeName.addC,
     machineCode: "81",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD D",
+    name: MicroOpcodeName.addD,
     machineCode: "82",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD E",
+    name: MicroOpcodeName.addE,
     machineCode: "83",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD H",
+    name: MicroOpcodeName.addH,
     machineCode: "84",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD L",
+    name: MicroOpcodeName.addL,
     machineCode: "85",
     category: MicroOpcodeCategory.add,
     bytes: 1,
   ),
   const MicroOpcode(
-    name: "ADD M",
+    name: MicroOpcodeName.addM,
     machineCode: "86",
     category: MicroOpcodeCategory.add,
     bytes: 1,
@@ -317,10 +317,124 @@ final kMicroOpcodes = [
   //////////////////////////////////////////////////////////////////////////////
 
   const MicroOpcode(
-    name: "ADI",
+    name: MicroOpcodeName.adi,
     machineCode: "C6",
     category: MicroOpcodeCategory.adi,
     bytes: 2,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.subA,
+    machineCode: "97",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subB,
+    machineCode: "90",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subC,
+    machineCode: "91",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subD,
+    machineCode: "92",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subE,
+    machineCode: "93",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subH,
+    machineCode: "94",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subL,
+    machineCode: "95",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+  const MicroOpcode(
+    name: MicroOpcodeName.subM,
+    machineCode: "96",
+    category: MicroOpcodeCategory.sub,
+    bytes: 1,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.sui,
+    machineCode: "D6",
+    category: MicroOpcodeCategory.sui,
+    bytes: 2,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.lda,
+    machineCode: "3A",
+    category: MicroOpcodeCategory.lda,
+    bytes: 3,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.ldaxB,
+    machineCode: "0A",
+    category: MicroOpcodeCategory.ldax,
+    bytes: 1,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.ldaxD,
+    machineCode: "1A",
+    category: MicroOpcodeCategory.ldax,
+    bytes: 1,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.sta,
+    machineCode: "32",
+    category: MicroOpcodeCategory.sta,
+    bytes: 3,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.staxB,
+    machineCode: "02",
+    category: MicroOpcodeCategory.stax,
+    bytes: 1,
+  ),
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  const MicroOpcode(
+    name: MicroOpcodeName.staxD,
+    machineCode: "12",
+    category: MicroOpcodeCategory.stax,
+    bytes: 1,
   ),
 
   //////////////////////////////////////////////////////////////////////////////

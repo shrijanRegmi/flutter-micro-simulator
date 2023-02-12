@@ -96,9 +96,16 @@ class MicroInputFieldProvider
           ..addAll({state.address: state.value}),
       );
 
-  void setAfterExecution() => state = state.copyWith(
-        afterExecution: Map<String, String>.from(state.beforeExecution)
-          ..addAll({state.address: state.value}),
+  void setBeforeExecution(final String address, final String value) =>
+      state = state.copyWith(
+        beforeExecution: Map<String, String>.from(state.beforeExecution)
+          ..addAll({address: value}),
+      );
+
+  void setAfterExecution(final String address, final String value) =>
+      state = state.copyWith(
+        afterExecution: Map<String, String>.from(state.afterExecution)
+          ..addAll({address: value}),
       );
 
   void setRegister(final MicroRegister register, final String value) =>
@@ -115,7 +122,7 @@ class MicroInputFieldProvider
     return opcode;
   }
 
-  String getRandomOpcodeForAddress() {
+  String getRandomOpcodeForAddress({final String? address}) {
     final currentBeforeExecution = state.beforeExecution;
 
     final rand = Random().nextInt(100);
@@ -145,10 +152,13 @@ class MicroInputFieldProvider
           .isNotEmpty;
     }
     debugPrint('Found value - $value in search attempt - $counter');
+    if (address != null) {
+      setBeforeExecution(address, value);
+    }
     return value;
   }
 
-  String getRandomOpcodeForRegister() {
+  String getRandomOpcodeForRegister({final MicroRegister? register}) {
     final currentRegisters = state.registers;
 
     final rand = Random().nextInt(100);
@@ -178,6 +188,9 @@ class MicroInputFieldProvider
           .isNotEmpty;
     }
     debugPrint('Found value - $value in search attempt - $counter');
+    if (register != null) {
+      setRegister(register, value);
+    }
     return value;
   }
 
