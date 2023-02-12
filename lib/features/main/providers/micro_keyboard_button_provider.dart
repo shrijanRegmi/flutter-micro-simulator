@@ -254,7 +254,7 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
     }
   }
 
-  // <---- main execution code lies here ---->
+  // <---- main execution code lies here ----> //
   void execOpcodes() {
     final currentBeforeExecution = SplayTreeMap<String, String>.from(
         _microInputFieldProviderState.beforeExecution);
