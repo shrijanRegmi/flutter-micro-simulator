@@ -4,6 +4,7 @@ An 8085 microprocessor simulator app made using flutter.
 
 ![micro_simulator](https://user-images.githubusercontent.com/47274622/218361620-4fa66d17-a2b8-4b09-83c0-42a297b6b82d.png)
 
+<br/>
 
 ## Getting Started
 
