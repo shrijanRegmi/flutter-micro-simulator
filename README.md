@@ -1,6 +1,16 @@
 # Micro Simulator
 
-An 8085 microprocessor simulator app made using flutter.
+An 8085 microprocessor simulator app made using flutter. [Supports Android, iOS, Web, Windows, Mac and Linux] <br/> 
+
+## Get the app
+  
+  <a href="https://drive.google.com/file/d/16-H5nlHftHBIlcS3roY5oNEwqFhtq-iv/view?usp=sharing" target="_blank">
+    <img src="https://user-images.githubusercontent.com/47274622/218366912-d085f0d1-7a08-4700-9d90-8ebfb3cec8c4.png" width="50" />
+  </a>
+  &nbsp
+  <a href="https://microsimulator.web.app/" target="_blank">
+    <img src="https://user-images.githubusercontent.com/47274622/218367741-48a1c5a7-385a-4d5c-8ecf-e82bbcd96be0.png" width="50" />
+  </a>
 
 ![micro_simulator](https://user-images.githubusercontent.com/47274622/218361620-4fa66d17-a2b8-4b09-83c0-42a297b6b82d.png)
 
@@ -8,8 +18,13 @@ An 8085 microprocessor simulator app made using flutter.
 
 ## Getting Started
 
-> Dev environment: flutter run --flavor dev --target lib/main_dev.dart <br/>
-> Prod environment: flutter run --flavor prod --target lib/main_prod.dart
+> Dev branch: develop <br/>
+> Prod branch: main
+
+<br/>
+
+> Run dev environment: flutter run --flavor dev --target lib/main_dev.dart <br/>
+> Run prod environment: flutter run --flavor prod --target lib/main_prod.dart
 
 <br/>
 
@@ -52,3 +67,12 @@ Initiate the following steps to execute the above example:
   - Press EXAM MEM
   - Observe value of address 9000
   - Press RESET
+
+<br/>
+
+## Search Opcodes
+
+The app is packed with a complete list of opcodes which supports search functionality.
+
+![micro_simulator_search](https://user-images.githubusercontent.com/47274622/218365945-32e34e45-19d2-4f4f-824a-346dbf2e49c0.png)
+
