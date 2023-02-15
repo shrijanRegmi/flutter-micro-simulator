@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:micro_simulator/features/main/views/screens/home_screen.dart';
+import 'package:micro_simulator/app/wrapper.dart';
 import 'package:micro_simulator/app/flavor_types.dart';
 import 'package:micro_simulator/utils/app_router.dart';
 import 'package:micro_simulator/utils/app_theme.dart';
@@ -24,7 +24,7 @@ class MPApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightPalette,
           darkTheme: AppTheme.darkPalette,
-          initialRoute: HomeScreen.route,
+          initialRoute: Wrapper.route,
           onGenerateRoute: AppRouter.onGenerateRoute,
         );
       },

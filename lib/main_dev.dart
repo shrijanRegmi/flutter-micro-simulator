@@ -19,7 +19,9 @@ void main() {
           child: DevicePreview(
             enabled: false,
             builder: (context) {
-              return const MPApp(flavor: Flavor.dev);
+              return const MPApp(
+                flavor: Flavor.dev,
+              );
             },
           ),
         ),
