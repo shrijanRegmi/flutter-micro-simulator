@@ -1,26 +1,51 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:micro_simulator/app/screens/unsupported_screen.dart';
+import 'package:micro_simulator/app/views/screens/splash_screen.dart';
+import 'package:micro_simulator/app/views/screens/unsupported_screen.dart';
 import 'package:micro_simulator/features/main/views/screens/home_screen.dart';
 
-class Wrapper extends HookConsumerWidget {
+class Wrapper extends StatefulHookConsumerWidget {
   const Wrapper({super.key});
 
   static const route = "/";
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 950.0 || constraints.maxHeight < 480.0) {
-          return UnsupportedScreen(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-          );
-        }
+  ConsumerState<ConsumerStatefulWidget> createState() => _WrapperState();
+}
 
-        return const HomeScreen();
-      },
-    );
+class _WrapperState extends ConsumerState<Wrapper> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 3000), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading
+        ? const SplashScreen()
+        : LayoutBuilder(
+            builder: (context, constraints) {
+              if (kIsWeb &&
+                  (constraints.maxWidth < 950.0 ||
+                      constraints.maxHeight < 580.0)) {
+                return UnsupportedScreen(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                );
+              }
+
+              return const HomeScreen();
+            },
+          );
   }
 }
