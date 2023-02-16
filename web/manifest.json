@@ -1,6 +1,6 @@
 {
-    "name": "micro_simulator",
-    "short_name": "micro_simulator",
+    "name": "Micro Simulator",
+    "short_name": "Micro Simulator",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

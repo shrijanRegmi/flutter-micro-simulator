@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +14,8 @@ class MicroVolumeButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isMuted = ref.watch(providerOfMicroVolumeButton);
+
+    if (kIsWeb || Platform.isWindows) return const SizedBox();
 
     return isMuted.maybeWhen(
       onValue: (val) => MicroRoundedButton(

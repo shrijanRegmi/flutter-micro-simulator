@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/app/views/screens/splash_screen.dart';
@@ -35,12 +34,24 @@ class _WrapperState extends ConsumerState<Wrapper> {
         ? const SplashScreen()
         : LayoutBuilder(
             builder: (context, constraints) {
-              if (kIsWeb &&
-                  (constraints.maxWidth < 950.0 ||
-                      constraints.maxHeight < 580.0)) {
+              var unsupported = false;
+              final width = constraints.maxWidth;
+              final height = constraints.maxHeight;
+
+              if (width < 950.0 || height < 580.0) {
+                unsupported = true;
+              } else if (width > 1400.0 && height < 800.0) {
+                unsupported = true;
+              }
+
+              if (unsupported) {
                 return UnsupportedScreen(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
+                  width: double.parse(
+                    constraints.maxWidth.toStringAsFixed(1),
+                  ),
+                  height: double.parse(
+                    constraints.maxHeight.toStringAsFixed(1),
+                  ),
                 );
               }
 
