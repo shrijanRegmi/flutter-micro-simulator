@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/app/views/screens/splash_screen.dart';
@@ -38,10 +41,12 @@ class _WrapperState extends ConsumerState<Wrapper> {
               final width = constraints.maxWidth;
               final height = constraints.maxHeight;
 
-              if (width < 950.0 || height < 580.0) {
-                unsupported = true;
-              } else if (width > 1400.0 && height < 800.0) {
-                unsupported = true;
+              if (kIsWeb || Platform.isWindows) {
+                if (width < 950.0 || height < 580.0) {
+                  unsupported = true;
+                } else if (width > 1400.0 && height < 800.0) {
+                  unsupported = true;
+                }
               }
 
               if (unsupported) {
