@@ -20,7 +20,7 @@ class _WrapperState extends ConsumerState<Wrapper> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 3000), () {
+    Future.delayed(const Duration(milliseconds: 4500), () {
       if (mounted) {
         setState(() {
           _isLoading = false;
