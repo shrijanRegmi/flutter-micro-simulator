@@ -4,7 +4,7 @@ An 8085 microprocessor simulator app made using flutter. [Supports Android, iOS,
 
 ## Get the app
   
-  <a href="https://drive.google.com/file/d/16-H5nlHftHBIlcS3roY5oNEwqFhtq-iv/view?usp=sharing" target="_blank">
+  <a href="https://drive.google.com/drive/folders/1054TIA7b2Mk6mnE3HjXR1fKOnmZA1KDI?usp=share_link" target="_blank">
     <img src="https://user-images.githubusercontent.com/47274622/218366912-d085f0d1-7a08-4700-9d90-8ebfb3cec8c4.png" width="50" />
   </a>
   &nbsp
