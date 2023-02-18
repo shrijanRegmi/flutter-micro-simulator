@@ -116,53 +116,50 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
 
     if (lastOperatorKeyAction == MicroKeyAction.examMem) {
       if (currentActiveInput == MicroActiveInput.address) {
-        final addressContainsValue =
-            currentBeforeExecution[currentAddress] != null;
         _microInputFieldProvider.makeAddressValueActive();
 
-        if (addressContainsValue) {
-          _microInputFieldProvider
-            ..resetValue()
-            ..setValue(
-              currentBeforeExecution[currentAddress]!,
-            );
-        }
+        final contentOfCurrentAddress =
+            currentBeforeExecution[currentAddress] ??
+                _microInputFieldProvider.getRandomOpcodeForAddress(
+                  address: currentAddress,
+                );
+
+        _microInputFieldProvider
+          ..resetValue()
+          ..setValue(contentOfCurrentAddress);
       } else {
         final nextAddress = CommonHelper.convertToIncrementedHex(
           currentAddress,
           withIncrement: 1,
         );
-        final addressContainsValue =
-            currentBeforeExecution[nextAddress] != null;
+
+        final contentOfNextAddress = currentBeforeExecution[nextAddress] ??
+            _microInputFieldProvider.getRandomOpcodeForAddress(
+              address: nextAddress,
+            );
 
         _microInputFieldProvider
           ..saveToBeforeExecution()
           ..resetAddress()
-          ..setAddress(nextAddress);
-        if (addressContainsValue) {
-          _microInputFieldProvider
-            ..resetValue()
-            ..setValue(currentBeforeExecution[nextAddress]!);
-        } else {
-          _microInputFieldProvider.makeAddressValueActive();
-        }
+          ..setAddress(nextAddress)
+          ..resetValue()
+          ..setValue(contentOfNextAddress);
       }
     } else if (lastOperatorKeyAction == MicroKeyAction.examReg) {
       if (lastShownRegister.index < MicroRegister.values.length - 1) {
         final nextRegister = MicroRegister.values[lastShownRegister.index + 1];
-        final registerContainsValue = currentRegisters[nextRegister] != null;
+
+        final contentOfNextRegister = currentRegisters[nextRegister] ??
+            _microInputFieldProvider.getRandomOpcodeForRegister(
+              register: nextRegister,
+            );
 
         _microInputFieldProvider
           ..resetAddress()
           ..setLastShownRegister(nextRegister)
-          ..setAddress(ksMicroRegister[nextRegister] ?? 'NA');
-        if (registerContainsValue) {
-          _microInputFieldProvider
-            ..resetValue()
-            ..setValue(currentRegisters[nextRegister]!);
-        } else {
-          _microInputFieldProvider.makeRegisterValueActive();
-        }
+          ..setAddress(ksMicroRegister[nextRegister] ?? 'NA')
+          ..resetValue()
+          ..setValue(contentOfNextRegister);
       }
     }
   }
@@ -330,6 +327,9 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
             break;
           case MicroOpcodeCategory.stax:
             execSTAX(address, opcode);
+            break;
+          case MicroOpcodeCategory.mov:
+            execMOV(address, opcode);
             break;
           case MicroOpcodeCategory.rst:
             execRST5(address, opcode);
@@ -989,6 +989,327 @@ class MicroKeyboardButtonProvider extends StateNotifier<bool> {
       requiredAddress,
       contentOfRegisterA,
     );
+  }
+
+  void execMOV(final String address, final MicroOpcode opcode) {
+    final currentRegisters = _microInputFieldProviderState.registers;
+    final currentBeforeExecution =
+        _microInputFieldProviderState.beforeExecution;
+
+    var sourceRegister = MicroRegister.unknown;
+    var destinationRegister = MicroRegister.unknown;
+
+    switch (opcode.name) {
+      case MicroOpcodeName.movAA:
+        sourceRegister = MicroRegister.a;
+        destinationRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movAB:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movAC:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movAD:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movAE:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movAH:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movAL:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movAM:
+        destinationRegister = MicroRegister.a;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movBA:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movBB:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movBC:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movBD:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movBE:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movBH:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movBL:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movBM:
+        destinationRegister = MicroRegister.b;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movCA:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movCB:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movCC:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movCD:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movCE:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movCH:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movCL:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movCM:
+        destinationRegister = MicroRegister.c;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movDA:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movDB:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movDC:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movDD:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movDE:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movDH:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movDL:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movDM:
+        destinationRegister = MicroRegister.d;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movEA:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movEB:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movEC:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movED:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movEE:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movEH:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movEL:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movEM:
+        destinationRegister = MicroRegister.e;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movHA:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movHB:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movHC:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movHD:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movHE:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movHH:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movHL:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movHM:
+        destinationRegister = MicroRegister.h;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movLA:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movLB:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movLC:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movLD:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movLE:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movLH:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movLL:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.l;
+        break;
+      case MicroOpcodeName.movLM:
+        destinationRegister = MicroRegister.l;
+        sourceRegister = MicroRegister.m;
+        break;
+      case MicroOpcodeName.movMA:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.a;
+        break;
+      case MicroOpcodeName.movMB:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.b;
+        break;
+      case MicroOpcodeName.movMC:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.c;
+        break;
+      case MicroOpcodeName.movMD:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.d;
+        break;
+      case MicroOpcodeName.movME:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.e;
+        break;
+      case MicroOpcodeName.movMH:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.h;
+        break;
+      case MicroOpcodeName.movML:
+        destinationRegister = MicroRegister.m;
+        sourceRegister = MicroRegister.l;
+        break;
+      default:
+        destinationRegister = MicroRegister.unknown;
+        sourceRegister = MicroRegister.unknown;
+    }
+
+    if (sourceRegister == MicroRegister.m) {
+      final contentOfRegisterH = currentRegisters[MicroRegister.h] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: MicroRegister.h,
+          );
+      final contentOfRegisterL = currentRegisters[MicroRegister.l] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: MicroRegister.l,
+          );
+
+      final addressOfMemory = '$contentOfRegisterH$contentOfRegisterL';
+
+      final contentOfMemory = currentBeforeExecution[addressOfMemory] ??
+          _microInputFieldProvider.getRandomOpcodeForAddress(
+            address: addressOfMemory,
+          );
+
+      _microInputFieldProvider.setRegister(
+        destinationRegister,
+        contentOfMemory,
+      );
+    } else if (destinationRegister == MicroRegister.m) {
+      final contentOfRegisterH = currentRegisters[MicroRegister.h] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: MicroRegister.h,
+          );
+      final contentOfRegisterL = currentRegisters[MicroRegister.l] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: MicroRegister.l,
+          );
+
+      final addressOfMemory = '$contentOfRegisterH$contentOfRegisterL';
+
+      final contentOfSourceRegister = currentRegisters[sourceRegister] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: sourceRegister,
+          );
+
+      _microInputFieldProvider.setBeforeExecution(
+        addressOfMemory,
+        contentOfSourceRegister,
+      );
+    } else {
+      final contentOfSourceRegister = currentRegisters[sourceRegister] ??
+          _microInputFieldProvider.getRandomOpcodeForRegister(
+            register: sourceRegister,
+          );
+
+      _microInputFieldProvider.setRegister(
+        destinationRegister,
+        contentOfSourceRegister,
+      );
+    }
   }
 
   void execRST5(final String address, final MicroOpcode opcode) {

@@ -199,7 +199,6 @@ class MicroOpcodeName {
   static const movME = 'MOV M, E';
   static const movMH = 'MOV M, H';
   static const movML = 'MOV M, L';
-  static const movMM = 'MOV M, M';
 
   //////////////////////////////////////////////////////////////////////////////
 }

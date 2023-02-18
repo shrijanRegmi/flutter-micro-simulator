@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:micro_simulator/features/main/enums/micro_active_input_type.dart';
 import 'package:micro_simulator/features/main/enums/micro_key_action_type.dart';
@@ -78,7 +76,6 @@ class MicroInputFieldProvider
 
   void makeAddressValueActive() => state = state.copyWith(
         activeInput: MicroActiveInput.value,
-        value: getRandomOpcodeForAddress(),
       );
 
   void makeRegisterValueActive() => state = state.copyWith(
@@ -135,11 +132,8 @@ class MicroInputFieldProvider
         .where((element) => element.value == value)
         .toList()
         .isNotEmpty;
-    var counter = 0;
 
     while (alreadyPresent) {
-      counter++;
-
       final rand = Random().nextInt(100);
       value = CommonHelper.convertToIncrementedHex(
         rand.toRadixString(16),
@@ -151,7 +145,6 @@ class MicroInputFieldProvider
           .toList()
           .isNotEmpty;
     }
-    debugPrint('Found value - $value in search attempt - $counter');
     if (address != null) {
       setBeforeExecution(address, value);
     }
@@ -171,11 +164,8 @@ class MicroInputFieldProvider
         .where((element) => element.value == value)
         .toList()
         .isNotEmpty;
-    var counter = 0;
 
     while (alreadyPresent) {
-      counter++;
-
       final rand = Random().nextInt(100);
       value = CommonHelper.convertToIncrementedHex(
         rand.toRadixString(16),
@@ -187,7 +177,6 @@ class MicroInputFieldProvider
           .toList()
           .isNotEmpty;
     }
-    debugPrint('Found value - $value in search attempt - $counter');
     if (register != null) {
       setRegister(register, value);
     }
