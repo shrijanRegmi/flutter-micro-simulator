@@ -16,27 +16,44 @@ class UnsupportedScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Unsupported Screen Size!',
-              style: TextStyle(
-                color: AppColors.colorGrey,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Unsupported Screen Size!',
+                  style: TextStyle(
+                    color: AppColors.colorGrey,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Text(
+                  '$width x $height',
+                  style: const TextStyle(
+                    color: AppColors.colorGrey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Positioned(
+            bottom: 20.0,
+            left: 0.0,
+            right: 0.0,
+            child: Center(
+              child: Text(
+                'Hint: Try zooming out your browser',
+                style: TextStyle(
+                  color: AppColors.colorGrey,
+                ),
               ),
             ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Text(
-              '$width x $height',
-              style: const TextStyle(
-                color: AppColors.colorGrey,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
